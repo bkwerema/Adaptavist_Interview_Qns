@@ -17,7 +17,6 @@ How to Use
 - Place the script inside a **ScriptRunner listener**, triggered on the "Issue Updated" event
 
 Question 2
-IMPROVEMENTS MADE TO THE ORIGINAL SCRIPT
 Issues with the original implementation:
 
 - No input validation was present to ensure the issueKey parameter was provided.
