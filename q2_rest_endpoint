@@ -1,0 +1,50 @@
+import com.onresolve.scriptrunner.runner.rest.common.CustomEndpointDelegate
+import groovy.json.JsonBuilder
+import groovy.transform.BaseScript
+import javax.servlet.http.HttpServletRequest
+import javax.ws.rs.core.MultivaluedMap
+import javax.ws.rs.core.Response
+
+@BaseScript CustomEndpointDelegate delegate
+getParentIssueKey (httpMethod: "GET", groups: ["jira-software-users"]) {
+MultivaluedMap queryParams, body, HttpServletRequest request ->
+try{
+    
+String issueKey = queryParams.getFirst("issueKey")
+if(!issueKey?.trim()){
+    return Response.status(Response.Status.BAD_REQUEST)
+    .entity(new JsonBuilder([error: "issueKey parameter is required"]).toPrettyString())
+                .build()
+}
+
+def issue = Issues.getByKey(issueKey)
+if(!issue){
+    return Response.status(Response.Status.BAD_REQUEST)
+    .entity(new JsonBuilder([error: "Issue not found with key: $issueKey"]).toPrettyString())
+                .build()
+}
+
+def parent = issue.getParentObject()
+if(!parent){
+    return Response.status(Response.Status.BAD_REQUEST)
+    .entity(new JsonBuilder([error: "Issue has no parent"]).toPrettyString())
+                .build()
+}
+
+def parentIssueKey = parent.key
+if(!parentIssueKey){
+    return Response.status(Response.Status.BAD_REQUEST)
+    .entity(new JsonBuilder([error: "Unable to retrieve key"]).toString())
+                .build()
+}
+Response.ok ( new JsonBuilder(parentIssueKey).toPrettyString()).build()
+
+} 
+catch(Exception e) {
+    return Response.serverError()
+    .entity(new JsonBuilder([error: "Internal Server Error"]).toString())
+                .build()
+}
+
+
+}
