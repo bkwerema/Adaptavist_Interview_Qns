@@ -16,9 +16,9 @@ How to Use
 
 - Place the script inside a **ScriptRunner listener**, triggered on the "Issue Updated" event
 
-Question 2
-Issues with the original implementation:
+Question 2:
 
+Issues with the original implementation:
 - No input validation was present to ensure the issueKey parameter was provided.
 - If the issueKey was missing or incorrect, the response returned a vague error message like "the issue does not exist".
 - There were no checks to confirm whether the issue was successfully retrieved.
